@@ -1,0 +1,10 @@
+// Intentionally empty by default.
+// Add Drizzle tables here when the site actually needs a database.
+// See examples/d1/db/schema.ts for an opt-in example.
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+export const plans = sqliteTable('plans', {id:text('id').primaryKey(),title:text('title').notNull(),start:text('start').notNull(),end:text('end').notNull(),priority:text('priority').notNull(),success:text('success').notNull(),estimate:integer('estimate').notNull(),improvement:text('improvement').notNull().default(''),created:text('created').notNull(),version:integer('version').notNull().default(1)});
+export const revisions = sqliteTable('revisions',{id:text('id').primaryKey(),planId:text('plan_id').notNull().references(()=>plans.id),snapshot:text('snapshot').notNull(),created:text('created').notNull()});
+export const tasks=sqliteTable('tasks',{id:text('id').primaryKey(),planId:text('plan_id').notNull().references(()=>plans.id),title:text('title').notNull(),due:text('due').notNull(),priority:text('priority').notNull(),tag:text('tag').notNull(),estimate:integer('estimate').notNull(),done:integer('done').notNull().default(0),deleted:integer('deleted').notNull().default(0),created:text('created').notNull()});
+export const logs=sqliteTable('logs',{id:text('id').primaryKey(),taskId:text('task_id').notNull().references(()=>tasks.id),start:text('start').notNull(),end:text('end').notNull(),minutes:integer('minutes').notNull(),note:text('note').notNull(),blocker:text('blocker').notNull(),created:text('created').notNull()});
+export const completions=sqliteTable('completions',{taskId:text('task_id').primaryKey().references(()=>tasks.id),created:text('created').notNull()});
+export const reviews=sqliteTable('reviews',{id:text('id').primaryKey(),planId:text('plan_id').notNull().references(()=>plans.id),start:text('start').notNull(),end:text('end').notNull(),note:text('note').notNull(),improvement:text('improvement').notNull(),nextPlanId:text('next_plan_id').references(()=>plans.id),created:text('created').notNull()});
